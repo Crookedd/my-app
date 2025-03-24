@@ -1,8 +1,14 @@
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import User, { IUser } from "../models/user";
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import User, { IUser } from '../models/user';
 
-const registerUser = async (firstName: string, lastName: string, username: string, password: string, role: string): Promise<IUser> => {
+const registerUser = async (
+  firstName: string,
+  lastName: string,
+  username: string,
+  password: string,
+  role: string,
+): Promise<IUser> => {
   const hashedPassword = await bcrypt.hash(password, 10);
   const newUser = new User({ firstName, lastName, username, password: hashedPassword, role });
   await newUser.save();
@@ -12,24 +18,23 @@ const registerUser = async (firstName: string, lastName: string, username: strin
 const loginUser = async (username: string, password: string): Promise<IUser> => {
   const user = await User.findOne({ username });
   if (!user) {
-    throw new Error("Invalid credentials");
+    throw new Error('Неверные данные');
   }
 
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
-    throw new Error("Invalid credentials");
+    throw new Error('Неверные данные');
   }
 
   return user;
 };
 
 const generateToken = (userId: string): string => {
-  return jwt.sign({ userId }, process.env.JWT_SECRET!, { expiresIn: "1h" });
+  return jwt.sign({ userId }, process.env.JWT_SECRET!, { expiresIn: '1h' });
 };
 
-
 const getUserById = async (userId: string) => {
-  return await User.findById(userId).select("-password"); // исключаем пароль из результата
+  return await User.findById(userId).select('-password');
 };
 
 const deleteUser = async (userId: string) => {

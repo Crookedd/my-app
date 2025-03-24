@@ -1,10 +1,10 @@
-import * as express from "express";
-import { IUser } from "../models/user"; // Импортируйте интерфейс IUser
+import * as express from 'express';
+import { IUser } from '../models/user';
 
 declare global {
   namespace Express {
     interface Request {
-      user?: IUser; // Добавляем свойство user типа IUser
+      user?: IUser;
     }
   }
 }

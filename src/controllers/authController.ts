@@ -1,11 +1,11 @@
-import { Request, Response } from "express";
-import { authService } from "../services/authService";
+import { Request, Response } from 'express';
+import { authService } from '../services/authService';
 
 const getUserData = async (req: Request, res: Response): Promise<void> => {
   try {
     const userId = req.user?.userId;
     if (!userId) {
-      res.status(401).json({ message: "User not authenticated." });
+      res.status(401).json({ message: 'Пользователь не прошел проверку подлинности.' });
       return;
     }
 
@@ -16,13 +16,11 @@ const getUserData = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-
-
 const deleteUser = async (req: Request, res: Response): Promise<void> => {
   try {
-    const userId = req.user?.userId; 
+    const userId = req.user?.userId;
     if (!userId) {
-      res.status(401).json({ message: "User not authenticated." });
+      res.status(401).json({ message: 'Пользователь не прошел проверку подлинности.' });
       return;
     }
 
@@ -33,7 +31,6 @@ const deleteUser = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-
 const register = async (req: Request, res: Response): Promise<void> => {
   try {
     const { firstName, lastName, username, password, role } = req.body;
@@ -43,11 +40,10 @@ const register = async (req: Request, res: Response): Promise<void> => {
     if (err instanceof Error) {
       res.status(400).json({ error: err.message });
     } else {
-      res.status(400).json({ error: 'An unknown error occurred' });
+      res.status(400).json({ error: 'УПС! Произошла ошибка' });
     }
   }
 };
-
 
 const login = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -59,7 +55,7 @@ const login = async (req: Request, res: Response): Promise<void> => {
     if (err instanceof Error) {
       res.status(400).json({ error: err.message });
     } else {
-      res.status(400).json({ error: 'An unknown error occurred' });
+      res.status(400).json({ error: 'УПС! Произошла ошибка' });
     }
   }
 };
@@ -69,4 +65,3 @@ export const authController = {
   register,
   login,
 };
-
