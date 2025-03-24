@@ -24,8 +24,9 @@ const loginUser = async (username: string, password: string): Promise<IUser> => 
 };
 
 const generateToken = (userId: string): string => {
-  return jwt.sign({ id: userId }, process.env.JWT_SECRET!, { expiresIn: "1h" });
+  return jwt.sign({ userId }, process.env.JWT_SECRET!, { expiresIn: "1h" });
 };
+
 
 const getUserById = async (userId: string) => {
   return await User.findById(userId).select("-password"); // исключаем пароль из результата

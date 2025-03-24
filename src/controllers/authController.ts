@@ -3,7 +3,7 @@ import { authService } from "../services/authService";
 
 const getUserData = async (req: Request, res: Response): Promise<void> => {
   try {
-    const userId = req.user?._id;
+    const userId = req.user?.userId;
     if (!userId) {
       res.status(401).json({ message: "User not authenticated." });
       return;
@@ -17,20 +17,22 @@ const getUserData = async (req: Request, res: Response): Promise<void> => {
 };
 
 
+
 const deleteUser = async (req: Request, res: Response): Promise<void> => {
   try {
-    const userId = req.user?._id; // Используем _id из req.user
+    const userId = req.user?.userId; 
     if (!userId) {
       res.status(401).json({ message: "User not authenticated." });
-      return; // Не забывайте возвращать
+      return;
     }
 
     await authService.deleteUser(userId);
-    res.status(204).send(); // Успешное удаление
+    res.status(204).send();
   } catch (error) {
     res.status(400).json({ error });
   }
 };
+
 
 const register = async (req: Request, res: Response): Promise<void> => {
   try {

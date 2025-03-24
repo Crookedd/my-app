@@ -6,7 +6,7 @@ const router = Router();
 
 router.post("/signup", authController.register);
 router.post("/signin", authController.login);
-router.get("/me", authenticateJWT, authController.getUserData); // Получение данных о себе
-router.delete("/me", authenticateJWT, authController.deleteUser); // Удаление пользователя
+router.get("/me", authenticateJWT, authController.getUserData);
+router.delete("/me", authenticateJWT, authController.deleteUser); 
 
 export const authRoutes = router;

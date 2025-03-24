@@ -1,11 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
-// Расширяем интерфейс Request, чтобы добавить свойство user
 declare global {
   namespace Express {
     interface Request {
-      user?: { _id: string }; // Добавляем свойство user с _id
+      user?: { userId: string }; 
     }
   }
 }
@@ -20,14 +19,12 @@ export const authenticateJWT = (req: Request, res: Response, next: NextFunction)
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
-
-    // Добавляем user в объект запроса
-    req.user = { _id: decoded.userId };
-
+    req.user = { userId: decoded.userId };
     next();
   } catch (error) {
     res.status(400).json({ message: "Invalid token." });
   }
 };
+
 
 
