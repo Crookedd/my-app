@@ -2,24 +2,28 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User, { IUser } from "../models/user";
 
-const registerUser = async (firstName: string, lastName: string, username: string, password: string, role: "student" | "teacher") => {
+const registerUser = async (firstName: string, lastName: string, username: string, password: string, role: string): Promise<IUser> => {
   const hashedPassword = await bcrypt.hash(password, 10);
-  const user = new User({ firstName, lastName, username, password: hashedPassword, role });
-  await user.save();
-  return user;
+  const newUser = new User({ firstName, lastName, username, password: hashedPassword, role });
+  await newUser.save();
+  return newUser;
 };
 
-const loginUser = async (username: string, password: string) => {
+const loginUser = async (username: string, password: string): Promise<IUser> => {
   const user = await User.findOne({ username });
-  if (!user) throw new Error("User not found");
+  if (!user) {
+    throw new Error("Invalid credentials");
+  }
 
   const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) throw new Error("Invalid credentials");
+  if (!isMatch) {
+    throw new Error("Invalid credentials");
+  }
 
   return user;
 };
 
-const generateToken = (userId: string) => {
+const generateToken = (userId: string): string => {
   return jwt.sign({ id: userId }, process.env.JWT_SECRET!, { expiresIn: "1h" });
 };
 

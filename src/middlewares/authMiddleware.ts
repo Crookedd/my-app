@@ -15,7 +15,7 @@ export const authenticateJWT = (req: Request, res: Response, next: NextFunction)
 
   if (!token) {
     res.status(401).json({ message: "Access denied. No token provided." });
-    return; // Завершаем выполнение функции
+    return;
   }
 
   try {
@@ -24,7 +24,7 @@ export const authenticateJWT = (req: Request, res: Response, next: NextFunction)
     // Добавляем user в объект запроса
     req.user = { _id: decoded.userId };
 
-    next(); // Переходим к следующему middleware
+    next();
   } catch (error) {
     res.status(400).json({ message: "Invalid token." });
   }
