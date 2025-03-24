@@ -1,23 +1,20 @@
-import express, { Request, Response } from 'express';
-import mongoose from 'mongoose';
+import express from "express";
+import { connectDB } from "./config/db";
+import dotenv from "dotenv";
+import { authRoutes } from "./routes/authRoutes";
+import { pingRoutes } from "./routes/pingRoutes";
+
+dotenv.config();
+const PORT = process.env.PORT || 3000;
+
+connectDB();
+
 const app = express();
-const port = 3000;
+app.use(express.json());
 
-const start = async () => {
-	try {
-		await mongoose.connect("mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000");
-		console.log('MongoDB connected!')
-    app.use(express.json());
-		app.get("/", (req: Request, res: Response) => {
-			res.send("Hello, Express with TypeScript!");
-		});
-		app.listen(port, () => {
-			console.log(`Server is running on http://localhost:${port}`);
-		});
-	} catch (error) {
-		console.error(error);
-		process.exit(1);
-	}
-};
+app.use("/api/auth", authRoutes);
+app.use("/api", pingRoutes);
 
-start();
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});
