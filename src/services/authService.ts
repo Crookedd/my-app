@@ -1,8 +1,9 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import User, { IUser } from '../models/user';
+import { userRepository } from '../repositories/userRepository';
+import { IUser } from '../models/user';
 
-const registerUser = async (
+const register = async (
   firstName: string,
   lastName: string,
   username: string,
@@ -10,13 +11,18 @@ const registerUser = async (
   role: string,
 ): Promise<IUser> => {
   const hashedPassword = await bcrypt.hash(password, 10);
-  const newUser = new User({ firstName, lastName, username, password: hashedPassword, role });
-  await newUser.save();
+  const newUser = await userRepository.createUser({
+    firstName,
+    lastName,
+    username,
+    password: hashedPassword,
+    role,
+  });
   return newUser;
 };
 
-const loginUser = async (username: string, password: string): Promise<IUser> => {
-  const user = await User.findOne({ username });
+const login = async (username: string, password: string): Promise<IUser> => {
+  const user = await userRepository.findUserByUsername(username);
   if (!user) {
     throw new Error('Неверные данные');
   }
@@ -34,16 +40,16 @@ const generateToken = (userId: string): string => {
 };
 
 const getUserById = async (userId: string) => {
-  return await User.findById(userId).select('-password');
+  return await userRepository.findUserById(userId);
 };
 
 const deleteUser = async (userId: string) => {
-  await User.findByIdAndDelete(userId);
+  return await userRepository.deleteUserById(userId);
 };
 
 export const authService = {
-  registerUser,
-  loginUser,
+  register,
+  login,
   generateToken,
   getUserById,
   deleteUser,
