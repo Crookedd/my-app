@@ -10,7 +10,7 @@ declare global {
 }
 
 export const authenticateJWT = (req: Request, res: Response, next: NextFunction): void => {
-  const token = req.header('Авторизация')?.split(' ')[1];
+  const token = req.header('Authorization')?.split(' ')[1];
 
   if (!token) {
     res.status(401).json({ message: 'Доступ запрещен. Токен не предоставлен.' });
