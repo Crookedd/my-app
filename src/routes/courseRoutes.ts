@@ -13,4 +13,3 @@ router.put(`${API_BASE_PATH}/courses/:id`, authenticateJWT, courseController.upd
 router.delete(`${API_BASE_PATH}/courses/:id`, authenticateJWT, courseController.deleteCourse);
 
 export const courseRoutes = router;
-

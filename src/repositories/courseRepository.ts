@@ -12,7 +12,7 @@ export const courseRepository = {
     const query: any = {};
 
     if (filters.title) {
-      query.title = { $regex: filters.title, $options: 'i' }; 
+      query.title = { $regex: filters.title, $options: 'i' };
     }
 
     if (filters.category) {
@@ -30,7 +30,7 @@ export const courseRepository = {
     const courses = await Course.find(query)
       .skip((page - 1) * limit)
       .limit(limit)
-      .sort({ createdAt: -1 }); 
+      .sort({ createdAt: -1 });
 
     const total = await Course.countDocuments(query);
 
