@@ -1,10 +1,12 @@
 import Course, { ICourse } from '../models/course';
+import Tag from '../models/tag';
 
 interface CourseFilters {
   title?: string;
   category?: string;
   level?: string;
   published?: boolean;
+  tags?: string[];
 }
 
 export const courseRepository = {
@@ -27,7 +29,12 @@ export const courseRepository = {
       query.published = filters.published;
     }
 
+    if (filters.tags && filters.tags.length > 0) {
+      query.tags = { $in: filters.tags };
+    }
+
     const courses = await Course.find(query)
+      .populate('tags')
       .skip((page - 1) * limit)
       .limit(limit)
       .sort({ createdAt: -1 });
@@ -38,7 +45,7 @@ export const courseRepository = {
   },
 
   async findById(id: string) {
-    return await Course.findById(id);
+    return await Course.findById(id).populate('tags');
   },
 
   async create(courseData: Partial<ICourse>) {

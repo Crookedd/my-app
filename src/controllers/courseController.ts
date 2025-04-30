@@ -1,23 +1,26 @@
 import { Request, Response } from 'express';
 import { courseService } from '../services/courseService';
+import Tag from '../models/tag';
 
 export const courseController = {
   async getCourses(req: Request, res: Response) {
     try {
-      const { title, category, level, published } = req.query;
+      const { title, category, level, published, tags } = req.query;
       const page = parseInt(req.query.page as string) || 1;
       const limit = parseInt(req.query.limit as string) || 10;
-
+  
       const filters = {
         title: title as string,
         category: category as string,
         level: level as string,
         published: published === 'true' ? true : published === 'false' ? false : undefined,
+        tags: tags ? (Array.isArray(tags) ? tags.map(tag => tag as string) : [tags as string]) : undefined, 
       };
-
+  
       const result = await courseService.getAllCourses(filters, page, limit);
       res.status(200).json(result);
     } catch (error) {
+      console.error("Ошибка при создании курса:", error);
       res.status(500).json({ error: 'Ошибка при получении курсов.' });
     }
   },
@@ -38,9 +41,24 @@ export const courseController = {
 
   async createCourse(req: Request, res: Response) {
     try {
+      if (req.body.tags && Array.isArray(req.body.tags)) {
+        const tagIds = await Promise.all(req.body.tags.map(async (tag: string) => {
+          const existingTag = await Tag.findOne({ name: tag.trim() });
+          if (existingTag) {
+            return existingTag._id; 
+          } else {
+            const newTag = new Tag({ name: tag.trim() });
+            const savedTag = await newTag.save();
+            return savedTag._id; 
+          }
+        }));
+        req.body.tags = tagIds;
+      }
+
       const course = await courseService.createCourse(req.body);
       res.status(201).json(course);
     } catch (error) {
+      console.error("Ошибка при создании курса:", error);
       res.status(500).json({ error: 'Ошибка при создании курса.' });
     }
   },
@@ -48,6 +66,21 @@ export const courseController = {
   async updateCourse(req: Request, res: Response) {
     try {
       const { id } = req.params;
+
+      if (req.body.tags && Array.isArray(req.body.tags)) {
+        const tagIds = await Promise.all(req.body.tags.map(async (tag: string) => {
+          const existingTag = await Tag.findOne({ name: tag.trim() });
+          if (existingTag) {
+            return existingTag._id; 
+          } else {
+            const newTag = new Tag({ name: tag.trim() });
+            const savedTag = await newTag.save();
+            return savedTag._id; 
+          }
+        }));
+        req.body.tags = tagIds;
+      }
+  
       const course = await courseService.updateCourse(id, req.body);
       if (!course) {
         res.status(404).json({ message: 'Курс не найден.' });
@@ -55,6 +88,7 @@ export const courseController = {
       }
       res.status(200).json(course);
     } catch (error) {
+      console.error("Ошибка при обновлении курса:", error);
       res.status(500).json({ error: 'Ошибка при обновлении курса.' });
     }
   },

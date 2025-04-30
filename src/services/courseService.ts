@@ -6,6 +6,7 @@ interface CourseFilters {
   category?: string;
   level?: string;
   published?: boolean;
+  tags?: string[];
 }
 
 export const courseService = {

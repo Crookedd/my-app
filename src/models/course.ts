@@ -1,5 +1,6 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import slugify from 'slugify';
+import { ITag } from './tag';
 
 export interface ICourse extends Document {
   title: string;
@@ -12,6 +13,7 @@ export interface ICourse extends Document {
   published: boolean;
   author: string;
   createdAt: Date;
+  tags: ITag[];
 }
 
 const courseSchema = new Schema<ICourse>({
@@ -30,6 +32,7 @@ const courseSchema = new Schema<ICourse>({
   published: { type: Boolean, default: false },
   author: { type: String, required: true },
   createdAt: { type: Date, default: Date.now, required: true },
+  tags: [{ type: Schema.Types.ObjectId, ref: 'Tag' }],
 });
 
 courseSchema.pre('validate', function (next) {
