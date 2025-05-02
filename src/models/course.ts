@@ -14,6 +14,7 @@ export interface ICourse extends Document {
   author: string;
   createdAt: Date;
   tags: ITag[];
+  favorites: { userId: string; username: string }[];
 }
 
 const courseSchema = new Schema<ICourse>({
@@ -33,6 +34,7 @@ const courseSchema = new Schema<ICourse>({
   author: { type: String, required: true },
   createdAt: { type: Date, default: Date.now, required: true },
   tags: [{ type: Schema.Types.ObjectId, ref: 'Tag' }],
+  favorites: [{ userId: String, username: String }],
 });
 
 courseSchema.pre('validate', function (next) {

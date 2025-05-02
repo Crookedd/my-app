@@ -29,4 +29,12 @@ export const courseService = {
   async deleteCourse(id: string) {
     return await courseRepository.deleteById(id);
   },
+
+  async addToFavorites(courseId: string, userId: string) {
+    return await courseRepository.addCourseToFavorites(courseId, userId);
+  },
+  
+  async removeFromFavorites(courseId: string, userId: string) {
+    return await courseRepository.removeCourseFromFavorites(courseId, userId);
+  },
 };

@@ -106,4 +106,48 @@ export const courseController = {
       res.status(500).json({ error: 'Ошибка при удалении курса.' });
     }
   },
+  
+  async addToFavorites(req: Request, res: Response): Promise<void> {
+    try {
+      const { id } = req.params;
+      const userId = req.user?.userId;
+  
+      if (!userId) {
+        res.status(403).json({ message: 'Доступ запрещен. Пользователь не аутентифицирован.' });
+        return;
+      }
+  
+      const courseData = await courseService.addToFavorites(id, userId);
+      if (!courseData) {
+        res.status(404).json({ message: 'Курс не найден.' });
+        return;
+      }
+      res.status(200).json(courseData); 
+    } catch (error) {
+      console.error("Ошибка при добавлении курса в избранное:", error);
+      res.status(500).json({ error: 'Ошибка при добавлении курса в избранное.' });
+    }
+  },
+
+  async removeFromFavorites(req: Request, res: Response): Promise<void> {
+    try {
+      const { id } = req.params;
+      const userId = req.user?.userId;
+  
+      if (!userId) {
+        res.status(403).json({ message: 'Доступ запрещен. Пользователь не аутентифицирован.' });
+        return;
+      }
+  
+      const removedCourseId = await courseService.removeFromFavorites(id, userId);
+      if (!removedCourseId) {
+        res.status(404).json({ message: 'Курс не найден.' });
+        return;
+      }
+      res.status(200).json({ message: 'Курс успешно удален из избранного.', courseId: removedCourseId });
+    } catch (error) {
+      console.error("Ошибка при удалении курса из избранного:", error);
+      res.status(500).json({ error: 'Ошибка при удалении курса из избранного.' });
+    }
+  }
 };

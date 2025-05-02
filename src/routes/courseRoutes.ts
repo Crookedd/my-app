@@ -12,4 +12,7 @@ router.post(`${API_BASE_PATH}/courses`, authenticateJWT, courseController.create
 router.put(`${API_BASE_PATH}/courses/:id`, authenticateJWT, courseController.updateCourse);
 router.delete(`${API_BASE_PATH}/courses/:id`, authenticateJWT, courseController.deleteCourse);
 
+router.post(`${API_BASE_PATH}/courses/:id/favorites`, authenticateJWT, courseController.addToFavorites);
+router.delete(`${API_BASE_PATH}/courses/:id/favorites`, authenticateJWT, courseController.removeFromFavorites);
+
 export const courseRoutes = router;

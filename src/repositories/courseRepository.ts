@@ -1,5 +1,5 @@
 import Course, { ICourse } from '../models/course';
-import Tag from '../models/tag';
+import User from '../models/user';
 
 interface CourseFilters {
   title?: string;
@@ -60,5 +60,47 @@ export const courseRepository = {
 
   async deleteById(id: string) {
     return await Course.findByIdAndDelete(id);
+  },
+
+  async addCourseToFavorites(courseId: string, userId: string) {
+    const user = await User.findById(userId);
+    const course = await Course.findById(courseId);
+  
+    if (!user || !course) {
+      return null;
+    }
+  
+    await Course.updateOne(
+      { _id: courseId },
+      { $addToSet: { favorites: { userId, username: user.username } } }
+    );
+  
+    await User.updateOne(
+      { _id: userId },
+      { $addToSet: { favorites: { courseId, courseTitle: course.title } } }
+    );
+  
+    return { courseId, courseTitle: course.title };
+  },
+  
+  async removeCourseFromFavorites(courseId: string, userId: string) {
+    const user = await User.findById(userId);
+    const course = await Course.findById(courseId);
+  
+    if (!user || !course) {
+      return null;
+    }
+  
+    await Course.updateOne(
+      { _id: courseId },
+      { $pull: { favorites: { userId } } }
+    );
+  
+    await User.updateOne(
+      { _id: userId },
+      { $pull: { favorites: { courseId } } }
+    );
+  
+    return courseId;
   },
 };
