@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { lessonService } from '../services/lessonService';
+import mongoose, { Types } from 'mongoose';
 
 export const lessonController = {
   async getLessonsByCourse(req: Request, res: Response) {
@@ -12,19 +13,25 @@ export const lessonController = {
     }
   },
 
-  async getLessonById(req: Request, res: Response) {
-    try {
-      const { id } = req.params;
-      const lesson = await lessonService.getLessonById(id);
-      if (!lesson) {
-        res.status(404).json({ message: 'Урок не найден.' });
-        return;
-      }
-      res.status(200).json(lesson);
-    } catch (error) {
-      res.status(500).json({ error: 'Ошибка при получении урока.' });
+async getLessonById(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      res.status(400).json({ message: 'Некорректный ID урока' });
+      return
     }
-  },
+    console.log("Получаем урок по ID:", id);
+    const lesson = await lessonService.getLessonById(id);
+    console.log("Результат:", lesson);  
+    if (!lesson) {
+      res.status(404).json({ message: 'Урок не найден.' });
+      return
+    }
+    res.status(200).json(lesson);
+  } catch (error) {
+    res.status(500).json({ error: 'Ошибка при получении урока.' });
+  }
+},
 
   async createLesson(req: Request, res: Response) {
     try {
@@ -38,8 +45,7 @@ export const lessonController = {
   async updateLesson(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const { body } =  req.body
-      const updated = await lessonService.updateLesson(id, body);
+      const updated = await lessonService.updateLesson(id, req.body);
       if (!updated) {
          res.status(404).json({ message: 'Урок не найден' });
         return

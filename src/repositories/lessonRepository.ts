@@ -6,7 +6,7 @@ export const lessonRepository = {
   },
 
   async findById(id: string) {
-    return await Lesson.findById(id).populate('course');
+    return await Lesson.findById(id);
   },
 
   async create(data: Partial<ILesson>) {
