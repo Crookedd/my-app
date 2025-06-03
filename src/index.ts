@@ -7,6 +7,8 @@ import { authRoutes } from './routes/authRoutes';
 import { pingRoutes } from './routes/pingRoutes';
 import { courseRoutes } from './routes/courseRoutes';
 import { uploadRoutes } from './routes/uploadRoutes';
+import { lessonRoutes } from './routes/lessonRoutes';
+import { commentRoutes } from './routes/commentRoutes';
 
 dotenv.config();
 const PORT = process.env.PORT || 3000;
@@ -22,6 +24,8 @@ app.use(authRoutes);
 app.use(pingRoutes);
 app.use(courseRoutes);
 app.use(uploadRoutes);
+app.use(lessonRoutes);
+app.use(commentRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
