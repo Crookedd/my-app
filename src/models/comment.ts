@@ -9,7 +9,7 @@ export interface IComment extends Document {
 
 const commentSchema = new Schema<IComment>({
   text: { type: String, required: true },
-  user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  user: { type: Schema.Types.ObjectId, ref: 'Пользователь', required: true },
   lesson: { type: Schema.Types.ObjectId, ref: 'Lesson', required: true },
   createdAt: { type: Date, default: Date.now }
 });

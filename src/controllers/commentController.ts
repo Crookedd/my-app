@@ -25,10 +25,12 @@ export const commentController = {
         lesson: req.params.lessonId
       });
       res.status(201).json(comment);
-    } catch {
+    } catch (err) {
+      console.error('Ошибка при создании комментария:', err); // ← вот это добавь
       res.status(500).json({ error: 'Ошибка при создании комментария' });
     }
   },
+
 
   async updateComment(req: Request, res: Response) {
     try {
