@@ -2,28 +2,45 @@ import { Request, Response } from 'express';
 import { courseService } from '../services/courseService';
 import Tag from '../models/tag';
 
+interface CourseFilters {
+  title?: string;
+  category?: string;
+  level?: string;
+  published?: boolean;
+  tags?: string[];
+}
+
 export const courseController = {
   async getCourses(req: Request, res: Response) {
-    try {
-      const { title, category, level, published, tags } = req.query;
-      const page = parseInt(req.query.page as string) || 1;
-      const limit = parseInt(req.query.limit as string) || 10;
-  
-      const filters = {
-        title: title as string,
-        category: category as string,
-        level: level as string,
-        published: published === 'true' ? true : published === 'false' ? false : undefined,
-        tags: tags ? (Array.isArray(tags) ? tags.map(tag => tag as string) : [tags as string]) : undefined, 
-      };
-  
-      const result = await courseService.getAllCourses(filters, page, limit);
-      res.status(200).json(result);
-    } catch (error) {
-      console.error("Ошибка при создании курса:", error);
-      res.status(500).json({ error: 'Ошибка при получении курсов.' });
-    }
-  },
+  try {
+    const { title, category, level, published, tags } = req.query;
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+
+    const filters: CourseFilters = {
+      title: typeof title === 'string' ? title : undefined,
+      category: typeof category === 'string' ? category : undefined,
+      level: typeof level === 'string' ? level : undefined,
+      published:
+        published === 'true'
+          ? true
+          : published === 'false'
+          ? false
+          : undefined,
+      tags: tags
+        ? Array.isArray(tags)
+          ? tags.map(tag => String(tag))
+          : [String(tags)]
+        : undefined,
+    };
+
+    const result = await courseService.getAllCourses(filters, page, limit);
+    res.status(200).json(result);
+  } catch (error) {
+    console.error('Ошибка при получении курсов:', error);
+    res.status(500).json({ error: 'Ошибка при получении курсов.' });
+  }
+},
 
   async getCourseById(req: Request, res: Response) {
     try {

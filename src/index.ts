@@ -9,6 +9,7 @@ import { courseRoutes } from './routes/courseRoutes';
 import { uploadRoutes } from './routes/uploadRoutes';
 import { lessonRoutes } from './routes/lessonRoutes';
 import { commentRoutes } from './routes/commentRoutes';
+import { enrollmentRoutes } from './routes/enrollmentRoutes';
 
 dotenv.config();
 const PORT = process.env.PORT || 3000;
@@ -26,6 +27,7 @@ app.use(courseRoutes);
 app.use(uploadRoutes);
 app.use(lessonRoutes);
 app.use(commentRoutes);
+app.use(enrollmentRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
