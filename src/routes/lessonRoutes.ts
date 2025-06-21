@@ -13,4 +13,3 @@ router.put(`${API_BASE_PATH}/lessons/:id`, authenticateJWT, lessonController.upd
 router.delete(`${API_BASE_PATH}/lessons/:id`, authenticateJWT, lessonController.deleteLesson);
 
 export const lessonRoutes = router;
-

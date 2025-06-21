@@ -1,6 +1,5 @@
 import { Schema, model, Document, Types } from 'mongoose';
 
-
 export interface ILesson extends Document {
   title: string;
   content?: string;
@@ -16,7 +15,7 @@ const lessonSchema = new Schema<ILesson>({
   videoUrl: String,
   course: { type: Schema.Types.ObjectId, ref: 'Course', required: true },
   order: { type: Number, default: 0 },
-  createdAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now },
 });
 
 export const Lesson = model<ILesson>('Урок', lessonSchema);

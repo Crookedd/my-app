@@ -9,30 +9,30 @@ export const enrollmentService = {
     return await enrollmentRepository.create(userId, courseId);
   },
 
-async getProgress(userId: string, courseId: string) {
-  const enrollment = await enrollmentRepository.findByUserAndCourse(userId, courseId);
-  if (!enrollment) return null;
+  async getProgress(userId: string, courseId: string) {
+    const enrollment = await enrollmentRepository.findByUserAndCourse(userId, courseId);
+    if (!enrollment) return null;
 
-  const totalLessons = await lessonRepository.findAllByCourse(courseId);
-  const completedCount = enrollment.completedLessons.length;
-  const totalCount = totalLessons.length;
+    const totalLessons = await lessonRepository.findAllByCourse(courseId);
+    const completedCount = enrollment.completedLessons.length;
+    const totalCount = totalLessons.length;
 
-  const progress = totalCount === 0 ? 0 : Math.round((completedCount / totalCount) * 100);
+    const progress = totalCount === 0 ? 0 : Math.round((completedCount / totalCount) * 100);
 
-  if (enrollment.progress !== progress) {
-    await enrollmentRepository.updateProgress(
-      String(enrollment._id),
-      enrollment.completedLessons.map(id => id.toString()),
-      progress
-    );
-  }
+    if (enrollment.progress !== progress) {
+      await enrollmentRepository.updateProgress(
+        String(enrollment._id),
+        enrollment.completedLessons.map((id) => id.toString()),
+        progress,
+      );
+    }
 
-  return {
-    completed: completedCount,
-    total: totalCount,
-    progress
-  };
-},
+    return {
+      completed: completedCount,
+      total: totalCount,
+      progress,
+    };
+  },
 
   async completeLesson(userId: string, courseId: string, lessonId: string) {
     const updated = await enrollmentRepository.addCompletedLesson(userId, courseId, lessonId);
@@ -50,5 +50,5 @@ async getProgress(userId: string, courseId: string) {
 
   async getEnrollmentStats(courseId: string) {
     return await enrollmentRepository.countEnrollments(courseId);
-  }
+  },
 };

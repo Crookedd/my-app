@@ -14,7 +14,7 @@ export const commentController = {
   async createComment(req: Request, res: Response) {
     try {
       const userId = req.user?.userId;
-      if (!userId) { 
+      if (!userId) {
         res.status(403).json({ message: 'Пользователь не аутентифицирован' });
         return;
       }
@@ -22,7 +22,7 @@ export const commentController = {
       const comment = await commentService.createComment({
         ...req.body,
         user: userId,
-        lesson: req.params.lessonId
+        lesson: req.params.lessonId,
       });
       res.status(201).json(comment);
     } catch (err) {
@@ -30,7 +30,6 @@ export const commentController = {
       res.status(500).json({ error: 'Ошибка при создании комментария' });
     }
   },
-
 
   async updateComment(req: Request, res: Response) {
     try {
@@ -56,5 +55,5 @@ export const commentController = {
     } catch {
       res.status(500).json({ error: 'Ошибка при удалении комментария' });
     }
-  }
+  },
 };

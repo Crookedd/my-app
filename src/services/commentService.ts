@@ -16,5 +16,5 @@ export const commentService = {
 
   async deleteComment(id: string) {
     return await commentRepository.deleteById(id);
-  }
+  },
 };

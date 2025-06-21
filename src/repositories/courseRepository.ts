@@ -65,42 +65,36 @@ export const courseRepository = {
   async addCourseToFavorites(courseId: string, userId: string) {
     const user = await User.findById(userId);
     const course = await Course.findById(courseId);
-  
+
     if (!user || !course) {
       return null;
     }
-  
+
     await Course.updateOne(
       { _id: courseId },
-      { $addToSet: { favorites: { userId, username: user.username } } }
+      { $addToSet: { favorites: { userId, username: user.username } } },
     );
-  
+
     await User.updateOne(
       { _id: userId },
-      { $addToSet: { favorites: { courseId, courseTitle: course.title } } }
+      { $addToSet: { favorites: { courseId, courseTitle: course.title } } },
     );
-  
+
     return { courseId, courseTitle: course.title };
   },
-  
+
   async removeCourseFromFavorites(courseId: string, userId: string) {
     const user = await User.findById(userId);
     const course = await Course.findById(courseId);
-  
+
     if (!user || !course) {
       return null;
     }
-  
-    await Course.updateOne(
-      { _id: courseId },
-      { $pull: { favorites: { userId } } }
-    );
-  
-    await User.updateOne(
-      { _id: userId },
-      { $pull: { favorites: { courseId } } }
-    );
-  
+
+    await Course.updateOne({ _id: courseId }, { $pull: { favorites: { userId } } });
+
+    await User.updateOne({ _id: userId }, { $pull: { favorites: { courseId } } });
+
     return courseId;
   },
 };

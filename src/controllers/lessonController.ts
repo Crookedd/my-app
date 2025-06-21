@@ -13,25 +13,25 @@ export const lessonController = {
     }
   },
 
-async getLessonById(req: Request, res: Response) {
-  try {
-    const { id } = req.params;
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      res.status(400).json({ message: 'Некорректный ID урока' });
-      return
+  async getLessonById(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+        res.status(400).json({ message: 'Некорректный ID урока' });
+        return;
+      }
+      console.log('Получаем урок по ID:', id);
+      const lesson = await lessonService.getLessonById(id);
+      console.log('Результат:', lesson);
+      if (!lesson) {
+        res.status(404).json({ message: 'Урок не найден.' });
+        return;
+      }
+      res.status(200).json(lesson);
+    } catch (error) {
+      res.status(500).json({ error: 'Ошибка при получении урока.' });
     }
-    console.log("Получаем урок по ID:", id);
-    const lesson = await lessonService.getLessonById(id);
-    console.log("Результат:", lesson);  
-    if (!lesson) {
-      res.status(404).json({ message: 'Урок не найден.' });
-      return
-    }
-    res.status(200).json(lesson);
-  } catch (error) {
-    res.status(500).json({ error: 'Ошибка при получении урока.' });
-  }
-},
+  },
 
   async createLesson(req: Request, res: Response) {
     try {
@@ -47,8 +47,8 @@ async getLessonById(req: Request, res: Response) {
       const { id } = req.params;
       const updated = await lessonService.updateLesson(id, req.body);
       if (!updated) {
-         res.status(404).json({ message: 'Урок не найден' });
-        return
+        res.status(404).json({ message: 'Урок не найден' });
+        return;
       }
       res.status(200).json(updated);
     } catch (err) {
@@ -56,15 +56,13 @@ async getLessonById(req: Request, res: Response) {
     }
   },
 
-
-
   async deleteLesson(req: Request, res: Response) {
     try {
       const { id } = req.params;
       const deleted = await lessonService.deleteLesson(id);
-      if (!deleted) { 
+      if (!deleted) {
         res.status(404).json({ message: 'Урок не найден' });
-        return
+        return;
       }
       res.status(204).send();
     } catch (err) {

@@ -2,7 +2,9 @@ import Comment, { IComment } from '../models/comment';
 
 export const commentRepository = {
   async findByLesson(lessonId: string) {
-    return await Comment.find({ lesson: lessonId }).populate('user', 'username').sort({ createdAt: -1 });
+    return await Comment.find({ lesson: lessonId })
+      .populate('user', 'username')
+      .sort({ createdAt: -1 });
   },
 
   async create(data: Partial<IComment>) {
@@ -17,5 +19,5 @@ export const commentRepository = {
 
   async deleteById(id: string) {
     return await Comment.findByIdAndDelete(id);
-  }
+  },
 };

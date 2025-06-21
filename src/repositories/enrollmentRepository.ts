@@ -14,7 +14,7 @@ export const enrollmentRepository = {
     return await Enrollment.findByIdAndUpdate(
       enrollmentId,
       { completedLessons, progress },
-      { new: true }
+      { new: true },
     );
   },
 
@@ -22,7 +22,7 @@ export const enrollmentRepository = {
     return await Enrollment.findOneAndUpdate(
       { user: userId, course: courseId },
       { $addToSet: { completedLessons: lessonId } },
-      { new: true }
+      { new: true },
     );
   },
 
@@ -30,11 +30,11 @@ export const enrollmentRepository = {
     return await Enrollment.findOneAndUpdate(
       { user: userId, course: courseId },
       { $pull: { completedLessons: lessonId } },
-      { new: true }
+      { new: true },
     );
   },
 
   async countEnrollments(courseId: string): Promise<number> {
     return await Enrollment.countDocuments({ course: courseId });
-  }
+  },
 };

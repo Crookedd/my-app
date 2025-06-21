@@ -2,35 +2,38 @@ import { Request, Response } from 'express';
 import { enrollmentService } from '../services/enrollmentService';
 
 export const enrollmentController = {
-async enrollUser(req: Request, res: Response) {
-  try {
-    const userId = req.user?.userId;
-    const { courseId } = req.params;
-
-    if (!userId || !courseId) {
-        res.status(400).json({ message: 'Необходимо передать courseId в параметрах' });
-        return
-    }
-    const enrollment = await enrollmentService.enroll(userId, courseId);
-    res.status(201).json(enrollment);
-  } catch (err) {
-    console.error('Ошибка при записи на курс:', err);
-    res.status(500).json({ error: 'Ошибка при записи на курс' });
-  }
-},
-
-async getCourseProgress(req: Request, res: Response) {
+  async enrollUser(req: Request, res: Response) {
     try {
       const userId = req.user?.userId;
       const { courseId } = req.params;
 
-     if (!userId) {
+      if (!userId || !courseId) {
+        res.status(400).json({ message: 'Необходимо передать courseId в параметрах' });
+        return;
+      }
+      const enrollment = await enrollmentService.enroll(userId, courseId);
+      res.status(201).json(enrollment);
+    } catch (err) {
+      console.error('Ошибка при записи на курс:', err);
+      res.status(500).json({ error: 'Ошибка при записи на курс' });
+    }
+  },
+
+  async getCourseProgress(req: Request, res: Response) {
+    try {
+      const userId = req.user?.userId;
+      const { courseId } = req.params;
+
+      if (!userId) {
         res.status(403).json({ message: 'Пользователь не аутентифицирован' });
-        return 
+        return;
       }
 
       const result = await enrollmentService.getProgress(userId, courseId);
-      if (!result) {res.status(404).json({ message: 'Запись не найдена' });return }
+      if (!result) {
+        res.status(404).json({ message: 'Запись не найдена' });
+        return;
+      }
 
       res.status(200).json(result);
     } catch (err) {
@@ -44,14 +47,14 @@ async getCourseProgress(req: Request, res: Response) {
       const userId = req.user?.userId;
       const { courseId, lessonId } = req.params;
 
-    if (!userId) {
+      if (!userId) {
         res.status(403).json({ message: 'Пользователь не аутентифицирован' });
-        return 
+        return;
       }
 
       if (!lessonId || !courseId) {
         res.status(400).json({ message: 'Нужны courseId и lessonId в параметрах' });
-        return 
+        return;
       }
 
       const result = await enrollmentService.completeLesson(userId, courseId, lessonId);
@@ -69,12 +72,12 @@ async getCourseProgress(req: Request, res: Response) {
 
       if (!userId) {
         res.status(403).json({ message: 'Пользователь не аутентифицирован' });
-        return 
+        return;
       }
 
       if (!lessonId || !courseId) {
-       res.status(400).json({ message: 'Нужны courseId и lessonId в параметрах' });
-       return 
+        res.status(400).json({ message: 'Нужны courseId и lessonId в параметрах' });
+        return;
       }
 
       const result = await enrollmentService.uncompleteLesson(userId, courseId, lessonId);
@@ -95,6 +98,5 @@ async getCourseProgress(req: Request, res: Response) {
       console.error('Ошибка при получении статистики:', err);
       res.status(500).json({ error: 'Ошибка при получении статистики записей' });
     }
-  }
+  },
 };
-

@@ -16,11 +16,10 @@ const EnrollmentSchema: Schema<EnrollmentDocument> = new Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 EnrollmentSchema.index({ user: 1, course: 1 }, { unique: true });
 
 const Enrollment = mongoose.model<EnrollmentDocument>('Enrollment', EnrollmentSchema);
 export default Enrollment;
-

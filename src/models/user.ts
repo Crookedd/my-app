@@ -7,7 +7,7 @@ export interface IUser extends Document {
   username: string;
   password: string;
   role: string;
-  favorites: { courseId: string; courseTitle: string }[]; 
+  favorites: { courseId: string; courseTitle: string }[];
 }
 
 const userSchema = new Schema<IUser>({
