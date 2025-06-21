@@ -1,33 +1,40 @@
-import Enrollment, { IEnrollment } from '../models/enrollment';
-import { Types } from 'mongoose';
+import Enrollment, { EnrollmentDocument } from '../models/enrollment';
 
 export const enrollmentRepository = {
-  async enroll(userId: string, courseId: string): Promise<IEnrollment> {
-    const enrollment = new Enrollment({
-      user: new Types.ObjectId(userId),
-      course: new Types.ObjectId(courseId),
-    });
-    return enrollment.save();
+  async findByUserAndCourse(userId: string, courseId: string): Promise<EnrollmentDocument | null> {
+    return await Enrollment.findOne({ user: userId, course: courseId });
   },
 
-  async isUserEnrolled(userId: string, courseId: string): Promise<boolean> {
-    const existing = await Enrollment.findOne({
-      user: userId,
-      course: courseId,
-    });
-    return !!existing;
+  async create(userId: string, courseId: string): Promise<EnrollmentDocument> {
+    const enrollment = new Enrollment({ user: userId, course: courseId });
+    return await enrollment.save();
   },
 
-  async getUserEnrollments(userId: string): Promise<IEnrollment[]> {
-    return Enrollment.find({ user: userId }).populate('course');
+  async updateProgress(enrollmentId: string, completedLessons: string[], progress: number) {
+    return await Enrollment.findByIdAndUpdate(
+      enrollmentId,
+      { completedLessons, progress },
+      { new: true }
+    );
   },
 
-  async getCourseEnrollments(courseId: string): Promise<IEnrollment[]> {
-    return Enrollment.find({ course: courseId }).populate('user');
+  async addCompletedLesson(userId: string, courseId: string, lessonId: string) {
+    return await Enrollment.findOneAndUpdate(
+      { user: userId, course: courseId },
+      { $addToSet: { completedLessons: lessonId } },
+      { new: true }
+    );
   },
 
-  async unenroll(userId: string, courseId: string): Promise<boolean> {
-    const result = await Enrollment.deleteOne({ user: userId, course: courseId });
-    return result.deletedCount === 1;
+  async removeCompletedLesson(userId: string, courseId: string, lessonId: string) {
+    return await Enrollment.findOneAndUpdate(
+      { user: userId, course: courseId },
+      { $pull: { completedLessons: lessonId } },
+      { new: true }
+    );
   },
+
+  async countEnrollments(courseId: string): Promise<number> {
+    return await Enrollment.countDocuments({ course: courseId });
+  }
 };
