@@ -57,6 +57,14 @@ const login = async (req: Request, res: Response): Promise<void> => {
     const { username, password } = req.body;
     const user = await authService.login(username, password);
     const token = authService.generateToken(user._id);
+    const channel = getChannel();
+    if (channel) {
+      channel.sendToQueue(
+        'user_login',
+        Buffer.from(JSON.stringify({ userId: user._id, timestamp: new Date().toISOString() })),
+        { persistent: true }
+      );
+    }
     res.status(200).json({ user, token });
   } catch (err: unknown) {
     if (err instanceof Error) {

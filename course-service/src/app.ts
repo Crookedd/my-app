@@ -9,6 +9,7 @@ import { lessonRoutes } from './routes/lessonRoutes';
 import { commentRoutes } from './routes/commentRoutes';
 import { enrollmentRoutes } from './routes/enrollmentRoutes';
 import { connectRabbit } from './rabbit';
+import { startConsumers } from './rabbitConsumer'; 
 
 dotenv.config();
 const PORT = 3002;
@@ -30,6 +31,7 @@ app.listen(PORT, async () => {
   try {
     await connectDB();
     await connectRabbit();
+    await startConsumers();
 
     console.log(`Server is running on http://localhost:${PORT}`);
   } catch (err) {

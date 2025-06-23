@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { commentService } from '../services/commentService';
+import { getChannel } from '../rabbit';
 
 export const commentController = {
   async getCommentsByLesson(req: Request, res: Response) {
@@ -18,12 +19,23 @@ export const commentController = {
         res.status(403).json({ message: 'Пользователь не аутентифицирован' });
         return;
       }
-
+      const { lessonId } = req.params;
       const comment = await commentService.createComment({
-        ...req.body,
-        user: userId,
-        lesson: req.params.lessonId,
-      });
+      ...req.body,
+      user: userId,
+      lesson: lessonId,
+    });
+
+    getChannel().sendToQueue(
+        'event.comment.created',
+        Buffer.from(JSON.stringify({
+          userId,
+          lessonId,
+          commentId: comment._id,
+          text: comment.text,
+        })),
+        { persistent: true }
+      );
       res.status(201).json(comment);
     } catch (err) {
       console.error('Ошибка при создании комментария:', err); // ← вот это добавь

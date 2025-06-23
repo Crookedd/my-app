@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { enrollmentService } from '../services/enrollmentService';
+import { getChannel } from '../rabbit';
 
 export const enrollmentController = {
   async enrollUser(req: Request, res: Response) {
@@ -12,6 +13,15 @@ export const enrollmentController = {
         return;
       }
       const enrollment = await enrollmentService.enroll(userId, courseId);
+      getChannel().sendToQueue(
+        'event.course.enrolled',
+        Buffer.from(JSON.stringify({
+          courseId,
+          userId,
+          enrollmentId: enrollment._id,
+        })),
+        { persistent: true }
+      );
       res.status(201).json(enrollment);
     } catch (err) {
       console.error('Ошибка при записи на курс:', err);
@@ -58,6 +68,15 @@ export const enrollmentController = {
       }
 
       const result = await enrollmentService.completeLesson(userId, courseId, lessonId);
+      getChannel().sendToQueue(
+        'event.lesson.completed',
+        Buffer.from(JSON.stringify({
+          courseId,
+          lessonId,
+          userId,
+        })),
+        { persistent: true }
+      );
       res.status(200).json(result);
     } catch (err) {
       console.error('Ошибка при завершении урока:', err);
@@ -81,6 +100,15 @@ export const enrollmentController = {
       }
 
       const result = await enrollmentService.uncompleteLesson(userId, courseId, lessonId);
+        getChannel().sendToQueue(
+        'event.lesson.uncompleted',
+        Buffer.from(JSON.stringify({
+          courseId,
+          lessonId,
+          userId,
+        })),
+        { persistent: true }
+      );
       res.status(200).json(result);
     } catch (err) {
       console.error('Ошибка при отмене завершения урока:', err);

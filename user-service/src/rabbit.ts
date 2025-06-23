@@ -7,7 +7,6 @@ export const connectRabbit = async (retries = 5, delay = 5000) => {
     try {
       const connection = await amqplib.connect(process.env.RABBITMQ_URL || 'amqp://rabbitmq:5672');
       channel = await connection.createChannel();
-      await channel.assertQueue('user_created', { durable: false });
       console.log('Подключено к RabbitMQ (user-service)');
       return;
     } catch (error) {

@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { courseService } from '../services/courseService';
 import Tag from '../models/tag';
+import { getChannel } from '../rabbit';
 
 interface CourseFilters {
   title?: string;
@@ -70,6 +71,16 @@ export const courseController = {
       }
 
       const course = await courseService.createCourse(req.body);
+
+       getChannel().sendToQueue(
+        'event.course.created',
+        Buffer.from(JSON.stringify({
+          courseId: course._id,
+          title: course.title,
+        })),
+        { persistent: true }
+      );
+
       res.status(201).json(course);
     } catch (error) {
       console.error('Ошибка при создании курса:', error);

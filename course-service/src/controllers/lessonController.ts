@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { lessonService } from '../services/lessonService';
 import mongoose, { Types } from 'mongoose';
+import { getChannel } from '../rabbit';
 
 export const lessonController = {
   async getLessonsByCourse(req: Request, res: Response) {
@@ -36,6 +37,15 @@ export const lessonController = {
   async createLesson(req: Request, res: Response) {
     try {
       const lesson = await lessonService.createLesson(req.body);
+      getChannel().sendToQueue(
+        'event.lesson.created',
+        Buffer.from(JSON.stringify({
+          lessonId: lesson._id,
+          title: lesson.title,
+          courseId: lesson.course,
+        })),
+        { persistent: true }
+      );
       res.status(201).json(lesson);
     } catch (err) {
       res.status(500).json({ error: 'Ошибка при создании урока' });

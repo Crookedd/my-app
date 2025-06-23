@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import { connectDB } from './config/db';
 import { connectRabbit } from './rabbit';
 import { authRoutes } from './routes/authRoutes';
+import { startConsumers } from './rabbitConsumer'; 
 
 dotenv.config();
 const app = express();
@@ -14,6 +15,7 @@ app.use(express.json());
   try {
     await connectDB();
     await connectRabbit();
+    await startConsumers();
 
     app.use(authRoutes);
 
