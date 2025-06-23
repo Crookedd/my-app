@@ -36,12 +36,12 @@ const register = async (req: Request, res: Response): Promise<void> => {
   try {
     const { firstName, lastName, username, password, role } = req.body;
     const newUser = await authService.register(firstName, lastName, username, password, role);
-    
+
     const channel = getChannel();
     if (channel) {
       channel.sendToQueue('user_created', Buffer.from(JSON.stringify({ userId: newUser._id })));
     }
-    
+
     res.status(201).json({ id: newUser._id, user: newUser });
   } catch (err: unknown) {
     if (err instanceof Error) {
@@ -73,4 +73,3 @@ export const authController = {
   register,
   login,
 };
-

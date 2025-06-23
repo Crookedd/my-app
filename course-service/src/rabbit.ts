@@ -13,7 +13,7 @@ export const connectRabbit = async (retries = 5, delay = 5000) => {
       console.error(`Попытка подключения к RabbitMQ не удалась (${i + 1}/${retries}):`, error);
       if (i < retries - 1) {
         console.log(`Повторная попытка через ${delay / 1000} секунд...`);
-        await new Promise(res => setTimeout(res, delay));
+        await new Promise((res) => setTimeout(res, delay));
       } else {
         console.error('Все попытки подключения к RabbitMQ исчерпаны.');
         process.exit(1);

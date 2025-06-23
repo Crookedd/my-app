@@ -28,9 +28,9 @@ app.use(enrollmentRoutes);
 
 app.listen(PORT, async () => {
   try {
-    await connectDB();         
-    await connectRabbit();       
-    
+    await connectDB();
+    await connectRabbit();
+
     console.log(`Server is running on http://localhost:${PORT}`);
   } catch (err) {
     console.error('Ошибка при запуске сервиса:', err);
