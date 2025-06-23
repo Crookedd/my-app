@@ -63,7 +63,7 @@ RABBITMQ_URL= путь_к_rabbit
    "password": "HHHHH",
    "role": "user"
    }
-```
+  ```
   - `POST /api/v1/courses/enrollment/enroll/:courseId` — записаться на курс (Предоставить Токен)
 
 ## Полезные команды
