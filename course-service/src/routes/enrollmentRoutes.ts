@@ -4,7 +4,11 @@ import { authenticateJWT } from '../middlewares/authMiddleware';
 
 const router = Router();
 
-router.post(`/enrollment/enroll/:courseId`, authenticateJWT, enrollmentController.enrollUser, u);
+router.post(
+  `/enrollment/enroll/:courseId`,
+  authenticateJWT,
+  enrollmentController.enrollUser,
+);
 router.get(
   `/enrollment/progress/:courseId`,
   authenticateJWT,
