@@ -1,0 +1,86 @@
+version: '3.8'
+
+services:
+  gateway:
+    build: ./gateway
+    container_name: gateway
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./gateway:/app
+    environment:
+      - PORT=3000
+      - RABBITMQ_URL=amqp://rabbitmq
+    depends_on:
+      - user-service
+      - course-service
+      - rabbitmq
+    networks:
+      - app-network
+
+  user-service:
+    build: ./user-service
+    container_name: user-service
+    ports:
+      - '3001:3001'
+    depends_on:
+      - mongo
+      - rabbitmq
+    environment:
+      - PORT=3001
+      - MONGO_URI=mongodb://mongo:27017/mongo
+    env_file:
+      - .env
+    volumes:
+      - ./user-service:/app
+      - /app/node_modules
+    networks:
+      - app-network
+
+  course-service:
+    build: ./course-service
+    container_name: course-service
+    ports:
+      - '3002:3002'
+    depends_on:
+      - mongo
+      - rabbitmq
+    environment:
+      - PORT=3002
+      - MONGO_URI=mongodb://mongo:27017/mongo
+    env_file:
+      - .env
+    volumes:
+      - ./course-service:/app
+      - /app/node_modules
+    networks:
+      - app-network
+
+  mongo:
+    image: mongo
+    container_name: mongo
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - app-network
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    networks:
+      - app-network
+
+volumes:
+  mongo-data:
+
+networks:
+  app-network:
+    driver: bridge
