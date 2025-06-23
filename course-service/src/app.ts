@@ -9,7 +9,7 @@ import { lessonRoutes } from './routes/lessonRoutes';
 import { commentRoutes } from './routes/commentRoutes';
 import { enrollmentRoutes } from './routes/enrollmentRoutes';
 import { connectRabbit } from './rabbit';
-import { startConsumers } from './rabbitConsumer'; 
+import { startConsumers } from './rabbitConsumer';
 
 dotenv.config();
 const PORT = 3002;

@@ -62,7 +62,7 @@ const login = async (req: Request, res: Response): Promise<void> => {
       channel.sendToQueue(
         'user_login',
         Buffer.from(JSON.stringify({ userId: user._id, timestamp: new Date().toISOString() })),
-        { persistent: true }
+        { persistent: true },
       );
     }
     res.status(200).json({ user, token });

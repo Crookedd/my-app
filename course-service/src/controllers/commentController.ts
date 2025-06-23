@@ -21,20 +21,22 @@ export const commentController = {
       }
       const { lessonId } = req.params;
       const comment = await commentService.createComment({
-      ...req.body,
-      user: userId,
-      lesson: lessonId,
-    });
+        ...req.body,
+        user: userId,
+        lesson: lessonId,
+      });
 
-    getChannel().sendToQueue(
+      getChannel().sendToQueue(
         'event.comment.created',
-        Buffer.from(JSON.stringify({
-          userId,
-          lessonId,
-          commentId: comment._id,
-          text: comment.text,
-        })),
-        { persistent: true }
+        Buffer.from(
+          JSON.stringify({
+            userId,
+            lessonId,
+            commentId: comment._id,
+            text: comment.text,
+          }),
+        ),
+        { persistent: true },
       );
       res.status(201).json(comment);
     } catch (err) {

@@ -3,6 +3,7 @@
 Этот проект представляет собой микросервисную архитектуру на базе Node.js, TypeScript, Express и MongoDB. Он разделён на несколько сервисов: user-service, course-service, gateway (API Gateway), с поддержкой обмена сообщениями через RabbitMQ.
 
 ## Содержание
+
 - [Структура микросервисов](#Структура-микросервисов)
 - [Требования](#требования)
 - [Запуск приложения](#запуск-приложения)
@@ -11,11 +12,11 @@
 
 ## Структура микросервисов
 
- - user-service — регистрация, вход, JWT, удаление пользователя.
- - course-service — курсы, уроки, комментарии, прогресс, запись на курсы и тд.
- - gateway — API Gateway: единая точка входа (/api/users, /api/courses).
- - mongo — база данных MongoDB.
- - rabbitmq — брокер сообщений RabbitMQ.
+- user-service — регистрация, вход, JWT, удаление пользователя.
+- course-service — курсы, уроки, комментарии, прогресс, запись на курсы и тд.
+- gateway — API Gateway: единая точка входа (/api/users, /api/courses).
+- mongo — база данных MongoDB.
+- rabbitmq — брокер сообщений RabbitMQ.
 
 ## Требования
 
@@ -38,6 +39,7 @@ docker-compose up --build
 ```
 
 3. После успешного запуска:
+
 - API Gateway будет доступен по адресу: [http://localhost:3000](http://localhost:3000)
 - Интерфейс RabbitMQ Management: [http://localhost:15672](http://localhost:15672)
 
@@ -79,4 +81,3 @@ docker-compose down
 # Проверка логов конкретного сервиса
 docker-compose logs -f user-service
 ```
-

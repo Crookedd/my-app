@@ -17,7 +17,7 @@ export const startConsumers = async () => {
     }
   });
 
-    await channel.assertQueue('user_login', { durable: true });
+  await channel.assertQueue('user_login', { durable: true });
   channel.consume('user_login', async (msg) => {
     if (msg) {
       const data = JSON.parse(msg.content.toString());
@@ -25,7 +25,6 @@ export const startConsumers = async () => {
       channel.ack(msg);
     }
   });
-
 
   console.log('[Consumer] Все очереди подключены и слушаются...');
 };

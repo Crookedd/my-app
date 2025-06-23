@@ -39,12 +39,14 @@ export const lessonController = {
       const lesson = await lessonService.createLesson(req.body);
       getChannel().sendToQueue(
         'event.lesson.created',
-        Buffer.from(JSON.stringify({
-          lessonId: lesson._id,
-          title: lesson.title,
-          courseId: lesson.course,
-        })),
-        { persistent: true }
+        Buffer.from(
+          JSON.stringify({
+            lessonId: lesson._id,
+            title: lesson.title,
+            courseId: lesson.course,
+          }),
+        ),
+        { persistent: true },
       );
       res.status(201).json(lesson);
     } catch (err) {

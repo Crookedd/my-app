@@ -72,13 +72,15 @@ export const courseController = {
 
       const course = await courseService.createCourse(req.body);
 
-       getChannel().sendToQueue(
+      getChannel().sendToQueue(
         'event.course.created',
-        Buffer.from(JSON.stringify({
-          courseId: course._id,
-          title: course.title,
-        })),
-        { persistent: true }
+        Buffer.from(
+          JSON.stringify({
+            courseId: course._id,
+            title: course.title,
+          }),
+        ),
+        { persistent: true },
       );
 
       res.status(201).json(course);

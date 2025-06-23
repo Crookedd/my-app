@@ -62,6 +62,5 @@ export const startConsumers = async () => {
     }
   });
 
-
   console.log('[Consumer] Все очереди подключены и слушаются...');
 };

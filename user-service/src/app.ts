@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import { connectDB } from './config/db';
 import { connectRabbit } from './rabbit';
 import { authRoutes } from './routes/authRoutes';
-import { startConsumers } from './rabbitConsumer'; 
+import { startConsumers } from './rabbitConsumer';
 
 dotenv.config();
 const app = express();
